@@ -13,10 +13,6 @@
 //- Consumo por kilómetro
 //Para escribir el código, se asume que los datos ya están cargados en vectores estáticos y que cada vector tiene una variable asociada que indica la cantidad de elementos cargados.
 //Se asume que cada vehículo realiza al menos un viaje en el día.
-//1) Escribir una función que ordene el vector de vehículos por modelo (ordenamiento burbuja).
-//2) Escribir una función que busque en el vector de vehículos por patente y devuelva la posición en el vector (búsqueda binaria).
-//3) Escribir una función que calcule el costo total del combustible utilizado por todos los camiones en el día.
-//4) Escribir una función que indique la patente del vehículo con mejor y peor rendimiento, de acuerdo al consumo total de combustible en relación con el total de los importes cobrados por los viajes.
 
 struct VIAJES
 {
@@ -35,6 +31,7 @@ struct VEHICULOS
     float consumoPorKM;
 };
 
+//1) Escribir una función que ordene el vector de vehículos por modelo (ordenamiento burbuja).
 void ordenamientoModelo(VEHICULOS vehiculos[], int nTotal){
     int i = 0;
     bool ordenado = false;
@@ -53,6 +50,7 @@ void ordenamientoModelo(VEHICULOS vehiculos[], int nTotal){
     }
 }
 
+//La función de abajo no funciona sin esta.
 void ordenamientoPatente(VEHICULOS vehiculos[], int nTotal){
     int i = 0;
     bool ordenado = false;
@@ -71,6 +69,7 @@ void ordenamientoPatente(VEHICULOS vehiculos[], int nTotal){
     }
 }
 
+//2) Escribir una función que busque en el vector de vehículos por patente y devuelva la posición en el vector (búsqueda binaria).
 int busquedaPatente(VEHICULOS vehiculos[], int nTotal, std::string patenteBuscada){
     int inicio = 0, fin = nTotal - 1;
 
@@ -91,6 +90,7 @@ int busquedaPatente(VEHICULOS vehiculos[], int nTotal, std::string patenteBuscad
     return -1;
 }
 
+//3) Escribir una función que calcule el costo total del combustible utilizado por todos los camiones en el día.
 float costoTotalCombustible(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[], int nVehiculos, float precio){
     float costoTotal = 0;
 
@@ -107,6 +107,7 @@ float costoTotalCombustible(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[],
     return costoTotal;
 }
 
+//4) Escribir una función que indique la patente del vehículo con mejor y peor rendimiento, de acuerdo al consumo total de combustible en relación con el total de los importes cobrados por los viajes.
 void mejorPeorRendimiento(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[], int nVehiculos, float precioLitro){
     float mejorRendimiento = -1.0;
     std::string patenteMejor;
@@ -118,12 +119,12 @@ void mejorPeorRendimiento(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[], i
     while (i < nViajes) {
         std::string patenteActual = viajes[i].patente;
 
-        float totalKmGrupo = 0;
-        float totalImporteGrupo = 0;
+        float totalKm = 0;
+        float totalImporte = 0;
 
         while (i < nViajes && viajes[i].patente == patenteActual) {
-            totalKmGrupo += viajes[i].kmRecorridos;
-            totalImporteGrupo += viajes[i].importe;
+            totalKm += viajes[i].kmRecorridos;
+            totalImporte += viajes[i].importe;
             i++;
         }
 
@@ -131,10 +132,10 @@ void mejorPeorRendimiento(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[], i
 
         if (posVehiculo != -1) {
             float consumo = vehiculos[posVehiculo].consumoPorKM;
-            float costoCombustibleGrupo = (totalKmGrupo * consumo) * precioLitro;
+            float costoCombustible = (totalKm * consumo) * precioLitro;
             
-            if (costoCombustibleGrupo > 0) {
-                float rendimientoActual = totalImporteGrupo / costoCombustibleGrupo;
+            if (costoCombustible > 0) {
+                float rendimientoActual = totalImporte / costoCombustible;
 
                 if (mejorRendimiento == -1.0) {
                     mejorRendimiento = rendimientoActual;
@@ -162,16 +163,16 @@ void mejorPeorRendimiento(VIAJES viajes[], int nViajes, VEHICULOS vehiculos[], i
 int main(){
     const int TAMANIO_MAXIMO = 4;
     VEHICULOS vehiculos[TAMANIO_MAXIMO] = {
-        {"5ASD4 A34", "Toyota", 12.5},
-        {"1U5DA B4J", "Chevrolet", 18.5},
-        {"ADO31 65N", "Toyota", 14.5},
-        {"A5O31 63N", "Ford", 16.5}
+        {"NG 536 FD", "Toyota", 12.5},
+        {"GJ 832 YT", "Chevrolet", 18.5},
+        {"GF 239 FA", "Toyota", 14.5},
+        {"JK 571 IQ", "Ford", 16.5}
     };
     VIAJES viajes[TAMANIO_MAXIMO] = {
-        {"5ASD4 A34", 1600, 1800, 20, 1000},
-        {"1U5DA B4J", 1200, 2000, 40, 1800},
-        {"ADO31 65N", 1100, 1500, 25, 1200},
-        {"A5O31 63N", 1100, 1600, 30, 1400}
+        {"NG 536 FD", 1600, 1800, 20, 1000},
+        {"GJ 832 YT", 1200, 2000, 40, 1800},
+        {"GF 239 FA", 1100, 1500, 25, 1200},
+        {"JK 571 IQ", 1100, 1600, 30, 1400}
     };
     
     int nTotal = 4;
@@ -189,6 +190,10 @@ int main(){
     std::cout << "Ingrese la patente a buscar" << std::endl;
     std::getline(std::cin, patenteBuscada);
     int posicion = busquedaPatente(vehiculos, nTotal, patenteBuscada);
+    //Testeo
+    // for(int i = 0; i < nTotal; i++){
+    //     std::cout << "\t-"<<vehiculos[i].patente << std::endl;
+    // }
     std::cout << "La patente buscada se encuentra en la posicion "<<posicion+1<< std::endl;
 
     float precioLitro = 400.0;
